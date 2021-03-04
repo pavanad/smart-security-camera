@@ -1,6 +1,9 @@
+import cv2
 import paho.mqtt.client as mqtt
-
 from config import settings
+
+from .detection import YoloDetection
+from .video import VideoStream
 
 
 class MQTTClient:
@@ -10,6 +13,9 @@ class MQTTClient:
         self.__client.on_connect = self.__on_connect
         self.__client.on_message = self.__on_message
         self.__client.connect(settings.BROKER_ADDRESS, settings.BROKER_PORT)
+
+        self.__yolo_cnn = YoloDetection()
+        self.__video_stream = VideoStream()
 
     def __on_connect(self, client, userdata, flags, rc):
         """
@@ -25,7 +31,14 @@ class MQTTClient:
         """
         The callback for when a PUBLISH message is received from the server.
         """
-        print(msg.topic + " " + str(msg.payload))
+        if msg.payload.decode() != "on":
+            return
+
+        for channel in settings.CHANNELS:
+            rtsp = settings.RTSP_URL.replace("channel=1", f"channel={channel}")
+            self.__video_stream.set_rtsp_url(rtsp)
+            frame = self.__video_stream.get_frame()
+            self.__yolo_cnn.detect(frame, channel)
 
     def start(self):
         self.__client.loop_forever()

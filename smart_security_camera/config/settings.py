@@ -1,4 +1,5 @@
 import os
+from pathlib import Path
 
 from dotenv import load_dotenv
 
@@ -17,3 +18,6 @@ TELEGRAM_CHAT_ID = os.getenv("TELEGRAM_CHAT_ID")
 
 # Cameras
 RTSP_URL = os.getenv("RTSP_URL")
+CHANNELS = os.getenv("CHANNELS").split(",")
+
+BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
