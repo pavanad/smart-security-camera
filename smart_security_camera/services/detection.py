@@ -1,13 +1,14 @@
 # -*- coding: utf-8 -*-
 
+import logging
 import os
 
 import cv2
 import imutils
 import numpy as np
+from config.settings import BASE_DIR
 from numpy.core.numeric import ndarray
 
-from config.settings import BASE_DIR
 from .bot import BotTelegram
 from .messages import Messages
 
@@ -26,6 +27,9 @@ class YoloDetection:
         self.__labels = self.__get_labels()
         self.__colors = self.__get_colors()
         self.__detector = self.__get_yolo_detector()
+
+        self.__logger = logging.getLogger(__name__)
+        self.__logger.info("Creating yolo detection object")
 
     def __get_labels(self) -> list:
         """Load the COCO class labels our YOLO model was trained on.

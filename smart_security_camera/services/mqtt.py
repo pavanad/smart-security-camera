@@ -1,3 +1,5 @@
+import logging
+
 import cv2
 import paho.mqtt.client as mqtt
 from config import settings
@@ -16,16 +18,19 @@ class MQTTClient:
 
         self.__yolo_cnn = YoloDetection()
         self.__video_stream = VideoStream()
+        self.__logger = logging.getLogger(__name__)
+        self.__logger.info("Creating mqtt client object")
 
     def __on_connect(self, client, userdata, flags, rc):
         """
         The callback for when the client receives a CONNACK response from the server.
         """
-        print("Connected with result code " + str(rc))
+        self.__logger.info(f"Connected in broker with result code {rc}")
 
         # subscribing in on_connect() means that if we lose the connection and
         # reconnect then subscriptions will be renewed.
         self.__client.subscribe(settings.TOPIC)
+        self.__logger.info(f"Subscribe in topic {settings.TOPIC}")
 
     def __on_message(self, client, userdata, msg):
         """
@@ -33,6 +38,8 @@ class MQTTClient:
         """
         if msg.payload.decode() != "on":
             return
+
+        self.__logger.info("Message published in the topic")
 
         for channel in settings.CHANNELS:
             rtsp = settings.RTSP_URL.replace("channel=1", f"channel={channel}")
