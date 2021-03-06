@@ -7,7 +7,7 @@ load_dotenv()
 
 # MQTT Broker
 TOPIC = os.getenv("TOPIC")
-BROKER_PORT = int(os.getenv("BROKER_PORT"))
+BROKER_PORT = os.getenv("BROKER_PORT")
 BROKER_USER = os.getenv("BROKER_USER")
 BROKER_PASSWORD = os.getenv("BROKER_PASSWORD")
 BROKER_ADDRESS = os.getenv("BROKER_ADDRESS")

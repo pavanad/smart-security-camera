@@ -1,0 +1,17 @@
+version: '3.4'
+
+services:
+  smartsecuritycamera:
+    image: smartsecuritycamera
+    container_name: smart_security_camera_debug
+    restart: always
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    command: ["sh", "-c", "pip install debugpy -t /tmp && python /tmp/debugpy --wait-for-client --listen 0.0.0.0:5678 smart_security_camera "]
+    ports:
+      - 5678:5678
+    volumes:
+      - ./logs/:/app/logs
+    env_file:
+      - smart_security_camera/config/.env

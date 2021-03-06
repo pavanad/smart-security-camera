@@ -2,6 +2,7 @@
 
 import logging
 import os
+import threading
 
 import cv2
 import imutils
@@ -13,12 +14,15 @@ from .bot import BotTelegram
 from .messages import Messages
 
 
-class YoloDetection:
+class YoloDetection(threading.Thread):
 
     MIN_WIDTH = 1080
     MODELS_DIR = f"{BASE_DIR}/services/model"
 
-    def __init__(self):
+    def __init__(self, daemon=True):
+        
+        super().__init__(daemon=daemon)
+
         self.__channel = 1
         self.__frame = None
         self.__original = None
@@ -103,6 +107,8 @@ class YoloDetection:
 
         if len(idxs) > 0:
             message_content = f"{Messages.DETECT_MESSAGE}"
+            self.__logger.info("Send detection results for user")
+
             for i in idxs.flatten():
                 (x, y) = (boxes[i][0], boxes[i][1])
                 (w, h) = (boxes[i][2], boxes[i][3])
@@ -136,21 +142,17 @@ class YoloDetection:
         layer_outputs = self.__detector.forward(self.__layer_names)
         self.__show_results(layer_outputs)
 
-    def set_frame(self, frame: ndarray):
+    def set_frame(self, frame: ndarray, channel: int = 1):
         """ Set frame from the video. """
         self.__frame = frame
         self.__original = frame
+        self.__channel = channel
 
         height, width = frame.shape[:2]
         if width > self.MIN_WIDTH:
             self.__frame = imutils.resize(frame, width=self.MIN_WIDTH)
 
-    def detect(self, frame: ndarray = None, channel: int = 1) -> ndarray:
+    def run(self) -> None:
         """ Initialize detect objects. """
-
-        self.__channel = channel
-        if frame is not None:
-            self.set_frame(frame)
-
+        self.__logger.info("Initialize detect objects")
         self.__detect_objects()
-        return self.__frame

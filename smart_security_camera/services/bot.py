@@ -25,9 +25,11 @@ class BotTelegram:
         self.__chat_id = chat_id
 
     def send_message(self, text: str):
+        self.__logger.info("Send message to user")
         self.__bot.send_message(chat_id=self.__chat_id, text=text)
 
     def send_photo(self, photo: ndarray):
+        self.__logger.info("Send photo to user")
         photo_buff = self.__ndarray_to_buffer(photo)
         self.__bot.send_photo(chat_id=self.__chat_id, photo=photo_buff)
 

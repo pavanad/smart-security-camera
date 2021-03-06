@@ -14,9 +14,8 @@ class MQTTClient:
         self.__client.username_pw_set(settings.BROKER_USER, settings.BROKER_PASSWORD)
         self.__client.on_connect = self.__on_connect
         self.__client.on_message = self.__on_message
-        self.__client.connect(settings.BROKER_ADDRESS, settings.BROKER_PORT)
+        self.__client.connect(settings.BROKER_ADDRESS, int(settings.BROKER_PORT))
 
-        self.__yolo_cnn = YoloDetection()
         self.__video_stream = VideoStream()
         self.__logger = logging.getLogger(__name__)
         self.__logger.info("Creating mqtt client object")
@@ -42,10 +41,14 @@ class MQTTClient:
         self.__logger.info("Message published in the topic")
 
         for channel in settings.CHANNELS:
+
             rtsp = settings.RTSP_URL.replace("channel=1", f"channel={channel}")
             self.__video_stream.set_rtsp_url(rtsp)
             frame = self.__video_stream.get_frame()
-            self.__yolo_cnn.detect(frame, channel)
+
+            yolo_cnn = YoloDetection(daemon=True)
+            yolo_cnn.set_frame(frame, channel)
+            yolo_cnn.start()
 
     def start(self):
         self.__client.loop_forever()

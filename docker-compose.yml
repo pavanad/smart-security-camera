@@ -1,0 +1,14 @@
+version: '3.4'
+
+services:
+  smartsecuritycamera:    
+    image: smartsecuritycamera
+    container_name: smart_security_camera
+    restart: always
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    volumes:
+      - ./logs/:/app/logs
+    env_file:
+      - smart_security_camera/config/.env
