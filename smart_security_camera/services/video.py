@@ -19,13 +19,16 @@ class VideoStream:
 
     def __open(self):
         self.__capture = cv2.VideoCapture(self.__rtsp_url, cv2.CAP_FFMPEG)
-        if not self.__capture.isOpened():            
+        if not self.__capture.isOpened():
             BotTelegram().send_message(Messages.ERROR_CONNECTION)
             raise Exception("Error trying to open the camera")
+
+        self.__logger.info("Connects to the camera")
 
     def __release(self):
         if self.__capture is not None:
             self.__capture.release()
+            self.__logger.info("Releases the camera connection")
 
     def set_rtsp_url(self, rtsp_url: str):
         self.__rtsp_url = rtsp_url
@@ -33,5 +36,6 @@ class VideoStream:
     def get_frame(self) -> ndarray:
         self.__open()
         ret, frame = self.__capture.read()
+        self.__logger.info("Get the frame from the camera")
         self.__release()
         return frame
