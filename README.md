@@ -52,3 +52,7 @@ RTSP_URL=<YOUR RTSP URL HERE>
 ```bash
 docker-compose up -d
 ```
+
+### Show your support
+
+Give a ⭐️ if this project helped you!
