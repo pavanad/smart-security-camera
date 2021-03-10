@@ -132,3 +132,5 @@ dmypy.json
 
 poetry.lock
 .DS_Store
+
+yolov3.weights
