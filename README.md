@@ -2,7 +2,7 @@
 
 This project analyze real time CCTV images with Convolutional Neural Networks. 
 
-The application uses neural network models to analyze RTSP (Real Time Streaming Protocol) video streams using OpenCV / Darknet, Google Assistant and sends the results with a Telegram Bot
+The application uses neural network models to analyze RTSP (Real Time Streaming Protocol) video streams using OpenCV / Darknet, Google Assistant and sends the results with a Telegram Bot.
 
 ![](images/architecture.png)
 
